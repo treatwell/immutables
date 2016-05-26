@@ -34,7 +34,8 @@ public interface ToImmutableCopyFalse {
   public interface B {
 
     default void use() {
-      ModifiableB.create().toImmutable();
+        ModifiableB b = ModifiableB.create();
+        b.toImmutable();
     }
   }
 
@@ -45,7 +46,8 @@ public interface ToImmutableCopyFalse {
     int c();
 
     default void use() {
-      ModifiableC.create().toImmutable();
+        ModifiableC c = ModifiableC.create();
+        c.toImmutable();
     }
   }
 }

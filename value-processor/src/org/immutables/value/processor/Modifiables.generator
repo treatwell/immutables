@@ -265,11 +265,12 @@ Use @Value.Modifiable cannot be used with @Value.Immutable which implements Ordi
  * @return A new modifiable instance
  */
 public static [thisReturnType type] [type.names.create]([constructorParameters]) {
-  return new [type.names.typeModifiable]()[for v in type.constructorArguments]
-    [if v.collectionType]
-      .[v.names.addAll]([v.name])[else if v.mapType]
-      .[v.names.putAll]([v.name])[else]
-      .[v.names.set]([v.name])[/if][/for];
+  [type.names.typeModifiable] m = new [type.names.typeModifiable]()[for v in type.constructorArguments];
+  [if v.collectionType]
+  m.[v.names.addAll]([v.name])[else if v.mapType]
+  m.[v.names.putAll]([v.name])[else]
+  m.[v.names.set]([v.name])[/if][/for];
+  return m;
 }
   [/if]
 
@@ -422,13 +423,13 @@ public [thisReturnType type] [type.names.from]([type.typeAbstract] instance) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.add]([v.unwrappedElementType] element) {
+public [fluentReturnType type] [v.names.add]([v.unwrappedElementType] element) {
   [if v.unwrappedElementPrimitiveType]
   [v.name].add(element);
   [else]
   [v.name].add([im.requireNonNull type](element, "[v.name] element"));
   [/if]
-  [thisReturn type]
+  [fluentReturn type]
 }
 
 /**
@@ -455,9 +456,10 @@ public [thisReturnType type] [v.names.add]([v.unwrappedElementType]... elements)
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.set](Iterable<[v.consumedElementType]> elements) {
+public [fluentReturnType type] [v.names.set](Iterable<[v.consumedElementType]> elements) {
   [v.name].clear();
-  return [v.names.addAll](elements);
+  [v.names.addAll](elements);
+  [fluentReturn type]
 }
 
 /**
@@ -466,7 +468,7 @@ public [thisReturnType type] [v.names.set](Iterable<[v.consumedElementType]> ele
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.addAll](Iterable<[v.consumedElementType]> elements) {
+public [fluentReturnType type] [v.names.addAll](Iterable<[v.consumedElementType]> elements) {
   for ([v.unwrappedElementType] element : elements) {
     [if v.unwrappedElementPrimitiveType]
     [v.name].add(element);
@@ -474,7 +476,7 @@ public [thisReturnType type] [v.names.addAll](Iterable<[v.consumedElementType]> 
     [v.name].add([im.requireNonNull type](element, "[v.name] element"));
     [/if]
   }
-  [thisReturn type]
+  [fluentReturn type]
 }
 [else if v.optionalType]
 
@@ -484,10 +486,10 @@ public [thisReturnType type] [v.names.addAll](Iterable<[v.consumedElementType]> 
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.set]([unwrappedOptionalType v] [v.name]) {
+public [fluentReturnType type] [v.names.set]([unwrappedOptionalType v] [v.name]) {
   this.[v.name] = [optionalOf v]([v.name]);
   [nondefaultSetter v]
-  [thisReturn type]
+  [fluentReturn type]
 }
 
 /**
@@ -496,10 +498,10 @@ public [thisReturnType type] [v.names.set]([unwrappedOptionalType v] [v.name]) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.set]([v.rawType][if not v.jdkSpecializedOptional]<[v.wrappedElementType]>[/if] [v.name]) {
+public [fluentReturnType type] [v.names.set]([v.rawType][if not v.jdkSpecializedOptional]<[v.wrappedElementType]>[/if] [v.name]) {
   this.[v.name] = [im.requireNonNull type]([v.name], "[v.name]");
   [nondefaultSetter v]
-  [thisReturn type]
+  [fluentReturn type]
 }
 [else if v.mapType]
   [for gE = v.consumedElementType, uK = v.unwrappedElementType, wK = v.wrappedElementType, uV = v.unwrappedSecondaryElementType, wV = v.wrappedSecondaryElementType]
@@ -524,9 +526,9 @@ public [thisReturnType type] [v.names.put]([uK] key, [uV]... values) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.putAll]([uK] key, Iterable<[wV]> values) {
+public [fluentReturnType type] [v.names.putAll]([uK] key, Iterable<[wV]> values) {
   [v.name].putAll(key, values);
-  [thisReturn type]
+  [fluentReturn type]
 }
     [/if]
 
@@ -537,11 +539,11 @@ public [thisReturnType type] [v.names.putAll]([uK] key, Iterable<[wV]> values) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.put]([uK] key, [uV] value) {
+public [fluentReturnType type] [v.names.put]([uK] key, [uV] value) {
   [v.name].put(
       [if not v.unwrappedElementPrimitiveType][im.requireNonNull type](key, "[v.name] key")[else]key[/if],
       [if not v.unwrappedSecondaryElementPrimitiveType][im.requireNonNull type](value, "[v.name] value")[else]value[/if]);
-  [thisReturn type]
+  [fluentReturn type]
 }
 
 /**
@@ -550,9 +552,10 @@ public [thisReturnType type] [v.names.put]([uK] key, [uV] value) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.set]([if v.multimapType][guava].collect.Multimap[else]java.util.Map[/if]<[gE], ? extends [wV]> entries) {
+public [fluentReturnType type] [v.names.set]([if v.multimapType][guava].collect.Multimap[else]java.util.Map[/if]<[gE], ? extends [wV]> entries) {
   [v.name].clear();
-  return [v.names.putAll](entries);
+  [v.names.putAll](entries);
+  [fluentReturn type]
 }
 
 /**
@@ -561,13 +564,13 @@ public [thisReturnType type] [v.names.set]([if v.multimapType][guava].collect.Mu
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.putAll]([if v.multimapType][guava].collect.Multimap[else]java.util.Map[/if]<[gE], ? extends [wV]> entries) {
+public [fluentReturnType type] [v.names.putAll]([if v.multimapType][guava].collect.Multimap[else]java.util.Map[/if]<[gE], ? extends [wV]> entries) {
   for (java.util.Map.Entry<[gE], ? extends [wV]> entry : entries.[if v.multimapType]entries[else]entrySet[/if]()) {
     [v.name].put(
         [im.requireNonNull type](entry.getKey(), "[v.name] key"),
         [im.requireNonNull type](entry.getValue(), "[v.name] value"));
   }
-  [thisReturn type]
+  [fluentReturn type]
 }
   [/for]
 [else if v.arrayType]
@@ -582,10 +585,10 @@ public [thisReturnType type] [v.names.putAll]([if v.multimapType][guava].collect
  */
 [varargsSafety v]
 [deprecation v]
-public [thisReturnType type] [v.names.set]([v.elementType]... elements) {
+public [fluentReturnType type] [v.names.set]([v.elementType]... elements) {
   this.[v.name] = [if v.nullable]elements == null ? null : [/if]elements.clone();
   [mandatorySetter v]
-  [thisReturn type]
+  [fluentReturn type]
 }
 [else]
 
@@ -598,7 +601,7 @@ public [thisReturnType type] [v.names.set]([v.elementType]... elements) {
  * @return {@code this} for use in a chained invocation
  */
 [deprecation v]
-public [thisReturnType type] [v.names.set]([v.atNullability][v.type] [v.name]) {
+public [fluentReturnType type] [v.names.set]([v.atNullability][v.type] [v.name]) {
   [if v.primitive or v.nullable]
   this.[v.name] = [v.name];
   [else]
@@ -606,7 +609,7 @@ public [thisReturnType type] [v.names.set]([v.atNullability][v.type] [v.name]) {
   [/if]
   [nondefaultSetter v]
   [mandatorySetter v]
-  [thisReturn type]
+  [fluentReturn type]
 }
 [/if]
 [/for]
@@ -882,7 +885,11 @@ import [starImport];
 
 [template thisReturn Type type]return this;[/template]
 
+[template fluentReturn Type type]return;[/template]
+
 [template thisReturnType Type type][type.names.typeModifiable][/template]
+
+[template fluentReturnType Type type]void[/template]
 
 [template invokeSuper Attribute a][for di = a.defaultInterface][if di][di].[/if][/for]super[/template]
 

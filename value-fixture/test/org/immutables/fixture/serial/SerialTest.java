@@ -54,9 +54,12 @@ public class SerialTest {
 
   @Test
   public void serializeModifiable() throws Exception {
-    ModifiableSomeSer instance = ModifiableSomeSer.create().setRegular(1);
+    ModifiableSomeSer instance = ModifiableSomeSer.create();
+    instance.setRegular(1);
     // interning
-    check(deserialize(serialize(instance))).is(ModifiableSomeSer.create().setRegular(1));
+    ModifiableSomeSer instance2 = ModifiableSomeSer.create();
+    instance2.setRegular(1);
+    check(deserialize(serialize(instance))).is(instance2);
   }
 
   @Test
